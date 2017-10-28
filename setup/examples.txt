@@ -1,0 +1,2 @@
+  curl -X PUT  -H "Content-Type: application/json" -d '{"board_mode":"board","pins":[{"pin":40, "es": "out", "initial": "low"}]}' http://192.168.1.20:8888/setup
+  curl -X PUT  -H "Content-Type: application/json" -d '{"pins": [{ "pin" : "40", "value" : 1}]}' http://192.168.1.20:8888/status
