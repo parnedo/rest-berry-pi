@@ -30,7 +30,7 @@ class Raspberry:
     def status(self, data):
         for pin in data['pins']:
             pin_id    = int(pin['pin'])
-            pin_value = int(pin['value'])
+            pin_value = pin['value']
             self._model.setPinValue(pin_id, pin_value)
 
     def getStatus(self):

@@ -33,9 +33,9 @@ class Model:
         return GPIO.input(pin)
 
     def tooglePinValue(self, pin):
-        value = (GPIO.LOW,GPIO.HIGH)[GPIO.input(pin) == GPIO.LOW]
+        value = not GPIO.input(pin)
         print "Setting pin",[pin], "value", [value]
-        GPIO.output(pin, value)
+        GPIO.output(pin, value) 
         return GPIO.input(pin)
 
     def setPinValue(self, pin, value):
