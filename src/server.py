@@ -27,7 +27,7 @@ class help:
         output ['GET/model'] = 'Get the configuration of the current mode'
         output ['PUT/model'] = 'Set a model, you can choose among this list : ' + str(models.keys()) + ' Example : curl -X PUT  -H "Content-Type: application/json" -d \'{"model":"pi_zero_w"}\' http://0.0.0.0:8080/model'
         output ['GET/setup'] = 'Get the setup for the current board'
-        output ['PUT/setup'] = 'Setup the board Example : curl -X PUT  -H "Content-Type: application/json" -d \'{"board_mode":"board","pins":[{"pin":3, "es":"out", "initial":"low"}, {"pin":20, "extra":"AM2302"}]}\' http://0.0.0.0:8080/setup'
+        output ['PUT/setup'] = 'Setup the board Example : curl -X PUT  -H "Content-Type: application/json" -d \'{"board_mode":"board","pins":[{"pin":3, "es":"out", "initial":"low"}, {"pin":20, "type":"AM2302"}]}\' http://0.0.0.0:8080/setup'
         output ['GET/status'] = 'Get the status of the pins for the current board'
         output ['PUT/status'] = 'Change the value of one or more pins : curl -X PUT  -H "Content-Type: application/json" -d \'{"pins": [{ "pin" : "40", "value" : 1}] }\' http://0.0.0.0:8080/status'
         return str(output)

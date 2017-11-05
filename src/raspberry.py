@@ -5,7 +5,7 @@ class Raspberry:
     def __init__(self):
         self._model = None
         self._setup = None
-        self._extra_AM2302=[]
+        self._type_AM2302=[]
         import os.path
         if os.path.isfile('/sys/firmware/devicetree/base/model'):
            self._model = models[open('/sys/firmware/devicetree/base/model','r').read().replace('\x00','')]
@@ -20,12 +20,12 @@ class Raspberry:
         self._setup = config
         self._model.setupBoardMode(config['board_mode'])
         for pin in config['pins']:
-           if "extra" not in pin.keys():
+           if "type" not in pin.keys():
              self._model.setupPin(pin['pin'], pin['es'], pin['initial'])
            else:
-             print "Setting pin[",pin['pin'],"] as [",pin['extra'],"]"
-             if pin["extra"] == "AM2302":
-                 self._extra_AM2302.append(pin["pin"])
+             print "Setting pin[",pin['pin'],"] as [",pin['type'],"]"
+             if pin["type"] == "AM2302":
+                 self._type_AM2302.append(pin["pin"])
         
     def getSetup(self):
         if self._setup:
@@ -45,8 +45,8 @@ class Raspberry:
     def getStatusByPin(self, iPin):
         single_pin = {}
         single_pin['pin'] = iPin
-        if iPin in self._extra_AM2302:
-            single_pin['extra'] = "AM2302"
+        if iPin in self._type_AM2302:
+            single_pin['type'] = "AM2302"
             humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, iPin)
             single_pin['humidity'] = humidity
             single_pin['temperature'] = temperature
