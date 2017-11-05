@@ -10,6 +10,7 @@ urls = (
     '/help'  , 'help',
     '/model' , 'model',
     '/status', 'status',
+    '/status/pin/(\d+)', 'status_pin',
     '/setup' , 'setup',
 )
 
@@ -56,6 +57,17 @@ class status:
         data = json.loads(web.data())
         card.status(data)
         return card.getStatus()
+
+class status_pin:
+    def GET(self, pin):
+        print "/GET : single_pin", pin
+        return card.getStatusByPin(int(pin))
+
+    def PUT(self, pin):
+        data = json.loads(web.data())
+        print "/PUT : single_pin",[data]
+        card.status(data, int(pin))
+        return card.getStatusByPin(int(pin))
 
 if __name__ == "__main__":
     app.run()
