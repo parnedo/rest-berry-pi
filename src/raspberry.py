@@ -1,10 +1,11 @@
 from model import models
-
+import Adafruit_DHT
 
 class Raspberry:
     def __init__(self):
         self._model = None
         self._setup = None
+        self._type_AM2302=[]
         import os.path
         if os.path.isfile('/sys/firmware/devicetree/base/model'):
            self._model = models[open('/sys/firmware/devicetree/base/model','r').read().replace('\x00','')]
@@ -19,7 +20,13 @@ class Raspberry:
         self._setup = config
         self._model.setupBoardMode(config['board_mode'])
         for pin in config['pins']:
-           self._model.setupPin(int(pin['pin']), pin['es'], pin['initial'])
+           if "type" not in pin.keys():
+             print "Setting pin[",pin['pin'],"] es [",pin['es'],"] with initial [",pin['initial'],"]"
+             self._model.setupPin(pin['pin'], pin['es'], pin['initial'])
+           else:
+             print "Setting pin[",pin['pin'],"] as [",pin['type'],"]"
+             if pin["type"] == "AM2302":
+                 self._type_AM2302.append(pin["pin"])
         
     def getSetup(self):
         if self._setup:
@@ -27,11 +34,26 @@ class Raspberry:
         else :
           return "Setup for the card is not configured"
 
-    def status(self, data):
-        for pin in data['pins']:
-            pin_id    = int(pin['pin'])
-            pin_value = pin['value']
-            self._model.setPinValue(pin_id, pin_value)
+    def status(self, iData, iPin = None):
+        if iPin is not None:
+            self._model.setPinValue(iPin, iData['value'])
+        else:
+            for pin in iData['pins']:
+                pin_id    = pin['pin']
+                pin_value = pin['value']
+                self._model.setPinValue(pin_id, pin_value)
+
+    def getStatusByPin(self, iPin):
+        single_pin = {}
+        single_pin['pin'] = iPin
+        if iPin in self._type_AM2302:
+            single_pin['type'] = "AM2302"
+            humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, iPin)
+            single_pin['humidity'] = humidity
+            single_pin['temperature'] = temperature
+        else:
+            single_pin['value'] = self._model.getPinValue(iPin)
+        return single_pin 
 
     def getStatus(self):
         if not self._model:
@@ -41,9 +63,6 @@ class Raspberry:
         output = {}
         output ['pins'] = []
         for pin in self._setup ['pins']:
-            single_pin = {}
-            single_pin['pin'] = pin['pin']
-            single_pin['value'] = self._model.getPinValue(int(pin['pin']))
-            output['pins'].append(single_pin)
+            output['pins'].append(self.getStatusByPin(pin['pin']))
         return output 
 
