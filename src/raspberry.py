@@ -21,6 +21,7 @@ class Raspberry:
         self._model.setupBoardMode(config['board_mode'])
         for pin in config['pins']:
            if "type" not in pin.keys():
+             print "Setting pin[",pin['pin'],"] es [",pin['es'],"] with initial [",pin['initial'],"]"
              self._model.setupPin(pin['pin'], pin['es'], pin['initial'])
            else:
              print "Setting pin[",pin['pin'],"] as [",pin['type'],"]"
